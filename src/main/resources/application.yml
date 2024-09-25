@@ -2,11 +2,17 @@ spring:
   application:
     name: spatial
 
+  profiles:
+    active: dev
+
   jpa:
+    hibernate:
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+#        dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
     defer-datasource-initialization: true
     open-in-view: false
   sql:
