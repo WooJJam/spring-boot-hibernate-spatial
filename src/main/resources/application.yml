@@ -12,7 +12,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
-#        dialect: org.hibernate.spatial.dialect.mysql.MySQL8SpatialDialect
+        dialect: org.hibernate.spatial.dialect.mysql.MySQL56SpatialDialect
     defer-datasource-initialization: true
     open-in-view: false
   sql:
@@ -24,3 +24,10 @@ spring:
     url: ${DATABASE_URL}
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
+
+logging:
+  level:
+    co.kr.spatial: debug
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
+

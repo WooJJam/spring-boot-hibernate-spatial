@@ -21,18 +21,15 @@ public class QueryDslAddressRepositoryImpl implements QueryDslAddressRepository 
 
 	@Override
 	public List<Address> findAddress(Double latitude, Double longitude) {
-		return jpaQueryFactory.select(address)
-			.from(address)
-            .where(getContainsBooleanExpression(latitude, longitude))
+		return jpaQueryFactory
+			.selectFrom(address)
+			.where(Expressions.booleanTemplate(
+				"function('ST_Distance_Sphere', {0}, function('ST_GEOMFROMTEXT', concat('POINT(', {1}, ' ', {2}, ')'), 4326)) <= {3}",
+				address.location,
+				latitude,
+				longitude,
+				5000 // 5km in meters
+			))
 			.fetch();
-	}
-
-	private BooleanTemplate getContainsBooleanExpression(Double latitude, Double longitude) {
-		int radius = 5000;
-		String target = "Point(%f %f)".formatted(latitude, longitude);
-		String geoFunction = "ST_CONTAINS(ST_BUFFER(ST_GeomFromText('%s', 4326), {0}), point)";
-		String expression = String.format(geoFunction, target);
-
-		return Expressions.booleanTemplate(expression, radius);
 	}
 }
