@@ -1,7 +1,6 @@
 package co.kr.woojjam.spatial.repository;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -14,11 +13,9 @@ import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.geom.PrecisionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -45,28 +42,41 @@ class QueryDslAddressRepositoryImplTest {
 
 	@BeforeEach
 	void setUp() {
-		Point point1 = geometryFactory.createPoint(new Coordinate(126.9780, 37.5665));
-		Point point2 = geometryFactory.createPoint(new Coordinate(126.9785,37.5672));
-		Point point3 = geometryFactory.createPoint(new Coordinate(126.9149, 37.5687));
-		Address address1 = new Address(point1, "Seoul City Hall"); // 서울 시청
-		Address address2 = new Address(point2, "5KM 이내"); // 5Km 이내
-		Address address3 = new Address(point3, "5KM 초과"); // 5KM 초과
+		Point point1 = geometryFactory.createPoint(new Coordinate(128.7601, 35.8413)); // company 위치
+		Point point2 = geometryFactory.createPoint(new Coordinate(128.7541,35.8264)); // 영남대학교
+		Point point3 = geometryFactory.createPoint(new Coordinate(128.7286, 35.8340)); // 정평역
+		Point point4 = geometryFactory.createPoint(new Coordinate(128.6815, 35.8411)); // 삼성라이온즈 파크
+		Point point5 = geometryFactory.createPoint(new Coordinate(128.6141, 35.8597)); // Daegu Bank Station
 
-		addressRepository.save(address1);
-		addressRepository.save(address2);
-		addressRepository.save(address3);
+		Address address1 = new Address(point1, "Runner co.");
+		Address address2 = new Address(point2, "YU");
+		Address address3 = new Address(point3, "Jeongpyeong station");
+		Address address4 = new Address(point4, "Samsung Lions Park");
+		Address address5 = new Address(point5, "Daegu Bank Station");
+		Address address6 = new Address(point1, "address6");
+		Address address7 = new Address(point2, "address7");
+		Address address8 = new Address(point3, "address8");
+		Address address9 = new Address(point4, "address9");
+		Address address10 = new Address(point5, "address10");
+
+
+		addressRepository.saveAll(List.of(address1,address2,address3,address4,address5,address6,address7,address8,address9,address10));
     }
 
 	@Test
-	@DisplayName("특정 좌표 근처의 주소를 조회한다.")
-	void findAddressesNearLocation() {
+	@DisplayName("1. 3km 내의 좌표를 조회할 수 있다.")
+	public void 범위_3KM_내의_장소_조회() {
 
 		// when
-		List<Address> addresses = addressRepository.findAddress(37.5665, 126.9780); // 서울 시청 좌표
+		List<Address> addresses = addressRepository.findAddressV1(35.8413, 128.7601); // 서울 시청 좌표
 
+		for (Address address : addresses) {
+			System.out.println("address = " + address);
+		}
 		// then
 		assertThat(addresses).isNotEmpty();
-		assertThat(addresses.size()).isEqualTo(2);
-		assertThat(addresses.get(0).getName()).isEqualTo("Seoul City Hall");
+		assertThat(addresses.size()).isEqualTo(6);
+		assertThat(addresses.get(1).getName()).isEqualTo("YU");
+		assertThat(addresses.get(2).getName()).isEqualTo("Jeongpyeong station");
 	}
 }

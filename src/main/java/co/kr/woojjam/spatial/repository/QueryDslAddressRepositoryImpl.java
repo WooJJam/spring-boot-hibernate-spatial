@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.querydsl.core.types.dsl.BooleanTemplate;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -20,16 +19,18 @@ public class QueryDslAddressRepositoryImpl implements QueryDslAddressRepository 
 	private final JPAQueryFactory jpaQueryFactory;
 
 	@Override
-	public List<Address> findAddress(Double latitude, Double longitude) {
+	public List<Address> findAddressV1(Double latitude, Double longitude) {
 		return jpaQueryFactory
 			.selectFrom(address)
-			.where(Expressions.booleanTemplate(
-				"function('ST_Distance_Sphere', {0}, function('ST_GEOMFROMTEXT', concat('POINT(', {1}, ' ', {2}, ')'), 4326)) <= {3}",
-				address.location,
-				latitude,
-				longitude,
-				5000 // 5km in meters
-			))
+			.where(Expressions.numberTemplate(Double.class,
+					"ST_Distance_Sphere({0}, ST_GeomFromText({1}, 4326))",
+					address.location,
+					Expressions.stringTemplate("CONCAT('POINT(', {0}, ' ', {1}, ')')", latitude, longitude))
+				.loe(20000)) // 3km = 3000M
 			.fetch();
+	}
+
+	public List<Address> findAddressV2(Double latitude, Double longitude) {
+		return null;
 	}
 }
