@@ -1,6 +1,5 @@
 package co.kr.woojjam.spatial.entity;
 
-
 import org.locationtech.jts.geom.Point;
 
 import jakarta.persistence.Column;
@@ -24,14 +23,14 @@ public class Address {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(name = "location", columnDefinition = "GEOMETRY", nullable = false)
-	private Point location;
+	@Column(columnDefinition = "POINT SRID 4326", nullable = false)
+	private Point coordinate;
 
 	private String name;
 
 	@Builder
-	public Address(Point location, String name) {
-		this.location = location;
+	public Address(Point coordinate, String name) {
+		this.coordinate = coordinate;
 		this.name = name;
 	}
 }

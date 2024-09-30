@@ -20,17 +20,14 @@ public class QueryDslAddressRepositoryImpl implements QueryDslAddressRepository 
 
 	@Override
 	public List<Address> findAddressV1(Double latitude, Double longitude) {
+
 		return jpaQueryFactory
 			.selectFrom(address)
 			.where(Expressions.numberTemplate(Double.class,
 					"ST_Distance_Sphere({0}, ST_GeomFromText({1}, 4326))",
-					address.location,
+					address.coordinate,
 					Expressions.stringTemplate("CONCAT('POINT(', {0}, ' ', {1}, ')')", latitude, longitude))
-				.loe(20000)) // 3km = 3000M
+				.loe(1000)) // 3km = 3000M
 			.fetch();
-	}
-
-	public List<Address> findAddressV2(Double latitude, Double longitude) {
-		return null;
 	}
 }

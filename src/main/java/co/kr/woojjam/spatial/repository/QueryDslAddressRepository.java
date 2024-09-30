@@ -5,5 +5,5 @@ import java.util.List;
 import co.kr.woojjam.spatial.entity.Address;
 
 public interface QueryDslAddressRepository {
-	List<Address> findAddress(Double latitude, Double longitude);
+	List<Address> findAddressV1(Double latitude, Double longitude);
 }

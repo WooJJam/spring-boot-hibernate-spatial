@@ -21,9 +21,21 @@ public class AddressController {
 
 	public final AddressRepository addressRepository;
 
-	@GetMapping
-	public Map<?, ?> findAddress() {
-		List<Address> addressV1 = addressRepository.findAddressV1(35.8413, 128.7601);
+	@GetMapping("/v1")
+	public Map<?, ?> findAddressV1() {
+		List<Address> addressV1 = addressRepository.findAddressV1(35.8601, 128.6200);
+		return addressV1.stream().collect(Collectors.toMap(Address::getId, Address::getName));
+	}
+
+	@GetMapping("/v2")
+	public Map<?, ?> findAddressV2() {
+		List<Address> addressV1 = addressRepository.findAddressV2(35.8601, 128.6200);
+		return addressV1.stream().collect(Collectors.toMap(Address::getId, Address::getName));
+	}
+
+	@GetMapping("/v3")
+	public Map<?, ?> findAddressV3() {
+		List<Address> addressV1 = addressRepository.findAddressV3(35.8601, 128.6200);
 		return addressV1.stream().collect(Collectors.toMap(Address::getId, Address::getName));
 	}
 

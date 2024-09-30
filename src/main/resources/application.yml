@@ -7,18 +7,17 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
-        default_batch_fetch_size: 100
+#        default_batch_fetch_size: 100
         dialect: org.hibernate.spatial.dialect.mysql.MySQL56SpatialDialect
     defer-datasource-initialization: true
     open-in-view: false
   sql:
     init:
       mode: always
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: ${DATABASE_URL}
